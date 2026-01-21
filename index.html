@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Tech Suite | Blindaje Total</title>
+    <title>IT Tech Suite | Master Console</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -19,40 +19,28 @@
             --text-dim: #8b949e;
         }
 
-        /* --- PROTECCIÓN VISUAL --- */
+        /* --- BLINDAJE --- */
         * { user-select: none !important; -webkit-user-drag: none !important; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; margin: 0; }
 
         #blackout { position: fixed; inset: 0; background: #000; z-index: 2000000; display: none; align-items: center; justify-content: center; color: white; text-align: center; }
         .blur-mode { filter: blur(100px) brightness(0) !important; transition: 0.1s; }
 
-        /* --- SIDEBAR IZQUIERDO --- */
+        /* --- UI --- */
         nav { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 30px 20px; display: flex; flex-direction: column; z-index: 100; }
         .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
-        
-        .nav-item {
-            color: var(--text-dim); padding: 12px 16px; border-radius: 12px; margin-bottom: 5px;
-            display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s;
-        }
+        .nav-item { color: var(--text-dim); padding: 12px 16px; border-radius: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
         .nav-item.active { background: rgba(63, 177, 255, 0.15); color: var(--primary); }
 
-        /* --- ÁREA DE CONTENIDO --- */
         main { flex: 1; padding: 50px; overflow-y: auto; position: relative; }
         .section { display: none; }
         .section.active { display: block; animation: fadeIn 0.3s ease; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
         .cmd-box { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 12px; font-family: 'Fira Code', monospace; color: #79c0ff; margin-top: 10px; }
-        .step-tag { color: var(--primary); font-weight: bold; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; display: block; }
         
-        button { 
-            width: 100%; padding: 12px; background: var(--primary); color: #000; border: none; 
-            border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px;
-        }
+        button { width: 100%; padding: 12px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
-        /* --- LOGIN --- */
+        /* LOGIN */
         #lock-screen { position: fixed; inset: 0; background: var(--bg-body); z-index: 100000; display: flex; align-items: center; justify-content: center; }
         .lock-card { background: #161b22; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 350px; }
         input, select { width: 100%; padding: 14px; margin-top: 15px; background: #000; border: 1px solid var(--border); color: white; border-radius: 12px; outline: none; }
@@ -63,16 +51,15 @@
 
 <div id="blackout">
     <div>
-        <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+        <i class="fas fa-shield-virus" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
         <h1>SISTEMA PROTEGIDO</h1>
-        <p>Contenido no capturable</p>
+        <p>Captura bloqueada y portapapeles vaciado.</p>
     </div>
 </div>
 
 <div id="lock-screen">
     <div class="lock-card">
-        <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-        <h2>Login Técnico</h2>
+        <h2>IT Toolkit</h2>
         <select id="role-select">
             <option value="user">Invitado</option>
             <option value="admin">Administrador</option>
@@ -90,64 +77,39 @@
     <div class="nav-item" onclick="changeTab('isos', this)"><i class="fas fa-download"></i> <span>ISOs ESD</span></div>
     <div class="nav-item" onclick="changeTab('mant', this)"><i class="fas fa-tools"></i> <span>Mantenimiento</span></div>
     <div class="nav-item" onclick="changeTab('act', this)"><i class="fas fa-key"></i> <span>Activación</span></div>
-    <div class="nav-item" onclick="changeTab('hw', this)"><i class="fas fa-server"></i> <span>Hardware</span></div>
 </nav>
 
 <main id="content-main">
     <div id="seg" class="section active">
         <h1>Seguridad</h1>
-        <div class="card">
-            <h3>VirusTotal</h3>
-            <button onclick="window.open('https://www.virustotal.com')">Abrir Analizador</button>
-        </div>
+        <div class="card"><h3>VirusTotal</h3><button onclick="window.open('https://www.virustotal.com')">Abrir</button></div>
     </div>
 
     <div id="bypass" class="section">
         <h1>Bypass Windows 11 (No TPM)</h1>
         <div class="card">
-            <span class="step-tag">Paso 1: USB</span>
-            <p>Tener en el USB la ISO de W11, entrar a la carpeta <strong>sources</strong> y abrir CMD.</p>
-            <span class="step-tag">Paso 2: Comando Bypass</span>
+            <p><strong>1.</strong> En el USB de W11, carpeta <strong>sources</strong>, abre CMD:</p>
             <div class="cmd-box">setupprep.exe /product server</div>
         </div>
         <div class="card">
-            <span class="step-tag">Paso 3: Salto de Cuenta</span>
-            <p>En la pantalla de cuenta Microsoft, pulsa <strong>Shift + F10</strong> y ejecuta:</p>
+            <p><strong>2.</strong> En la pantalla de cuenta, <strong>Shift + F10</strong> y ejecuta:</p>
             <div class="cmd-box">start ms-cxh:localonly</div>
-            <p style="margin-top:10px; font-size: 0.85rem; color: var(--text-dim);">Esto te permite crear la cuenta local sin internet.</p>
         </div>
     </div>
 
     <div id="isos" class="section">
-        <h1>ISOs y Windows</h1>
-        <div class="card">
-            <h3>Manuals WinAndOffice</h3>
-            <button onclick="window.open('https://manuals.winandoffice.com/es/categories-esd/')">Ver ISOs Oficiales</button>
-        </div>
+        <h1>ISOs Oficiales</h1>
+        <div class="card"><button onclick="window.open('https://manuals.winandoffice.com/es/categories-esd/')">Ver Repositorio</button></div>
     </div>
 
     <div id="mant" class="section">
         <h1>Mantenimiento</h1>
-        <div class="card">
-            <h3>Reparación de Sistema</h3>
-            <div class="cmd-box">dism /online /cleanup-image /restorehealth; sfc /scannow</div>
-        </div>
+        <div class="card"><div class="cmd-box">dism /online /cleanup-image /restorehealth; sfc /scannow</div></div>
     </div>
 
     <div id="act" class="section">
         <h1>Activación</h1>
-        <div class="card">
-            <h3>MAS (Microsoft Activation Scripts)</h3>
-            <div class="cmd-box">irm https://get.activated.win | iex</div>
-        </div>
-    </div>
-
-    <div id="hw" class="section">
-        <h1>Hardware</h1>
-        <div class="card">
-            <h3>Diagnóstico</h3>
-            <button onclick="window.open('https://www.hwinfo.com/download/')">Descargar HWiNFO</button>
-        </div>
+        <div class="card"><div class="cmd-box">irm https://get.activated.win | iex</div></div>
     </div>
 </main>
 
@@ -172,36 +134,43 @@
         el.classList.add('active');
     }
 
-    // --- BLOQUEO REFORZADO ---
+    // --- ELIMINACIÓN DE PORTAPAPELES (NIVEL KERNEL BROWSER) ---
+    function clearClipboard() {
+        navigator.clipboard.writeText("CONTENIDO PROTEGIDO - IT TOOLKIT").catch(()=>{});
+    }
+
+    // Monitoreo constante cuando la ventana pierde el foco
+    let clipboardInterval;
+
     window.addEventListener('keydown', function(e) {
         // Bloqueo F12, Ctrl+U, Ctrl+Shift+I
         if (e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
             e.preventDefault(); e.stopPropagation(); return false;
         }
-
-        // Si presiona tecla Windows (Meta) solo sale el mensaje
-        if (e.key === "Meta") {
+        
+        // Detección de Captura
+        if (e.key === "PrintScreen" || e.keyCode == 44 || e.key === "Meta") {
             document.getElementById('blackout').style.display = 'flex';
-            setTimeout(() => { document.getElementById('blackout').style.display = 'none'; }, 800);
-        }
-
-        // Si presiona Imprimir Pantalla (con o sin Windows) vaciamos clipboard
-        if (e.key === "PrintScreen" || e.keyCode == 44) {
-            navigator.clipboard.writeText(""); // Limpia el pegado
-            document.getElementById('blackout').style.display = 'flex';
+            clearClipboard();
             setTimeout(() => { document.getElementById('blackout').style.display = 'none'; }, 1000);
         }
     }, true);
 
     document.addEventListener('contextmenu', e => e.preventDefault());
 
+    // Cuando el usuario sale (Alt+Tab o Win+PrtSc), limpiamos el portapapeles sin parar
     window.addEventListener('blur', () => {
         document.getElementById('content-main').classList.add('blur-mode');
         document.getElementById('blackout').style.display = 'flex';
+        clearClipboard();
+        // Bucle de seguridad: limpia cada 100ms mientras no estés en la web
+        clipboardInterval = setInterval(clearClipboard, 100);
     });
+
     window.addEventListener('focus', () => {
         document.getElementById('content-main').classList.remove('blur-mode');
         document.getElementById('blackout').style.display = 'none';
+        clearInterval(clipboardInterval);
     });
 </script>
 
