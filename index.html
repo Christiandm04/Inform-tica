@@ -23,7 +23,7 @@
         * { user-select: none !important; -webkit-user-drag: none !important; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; margin: 0; }
 
-        #blackout { position: fixed; inset: 0; background: #000; z-index: 2000000; display: none; align-items: center; justify-content: center; color: white; }
+        #blackout { position: fixed; inset: 0; background: #000; z-index: 2000000; display: none; align-items: center; justify-content: center; color: white; text-align: center; }
         .blur-mode { filter: blur(100px) brightness(0) !important; transition: 0.1s; }
 
         /* --- SIDEBAR IZQUIERDO --- */
@@ -45,6 +45,7 @@
 
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
         .cmd-box { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 12px; font-family: 'Fira Code', monospace; color: #79c0ff; margin-top: 10px; }
+        .step-tag { color: var(--primary); font-weight: bold; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; display: block; }
         
         button { 
             width: 100%; padding: 12px; background: var(--primary); color: #000; border: none; 
@@ -60,7 +61,13 @@
 
 <body oncontextmenu="return false">
 
-<div id="blackout"><h1>SISTEMA PROTEGIDO</h1></div>
+<div id="blackout">
+    <div>
+        <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+        <h1>SISTEMA PROTEGIDO</h1>
+        <p>Contenido no capturable</p>
+    </div>
+</div>
 
 <div id="lock-screen">
     <div class="lock-card">
@@ -79,6 +86,7 @@
 <nav>
     <div class="logo"><i class="fas fa-microchip"></i> <span>IT TOOLKIT</span></div>
     <div class="nav-item active" onclick="changeTab('seg', this)"><i class="fas fa-shield-halved"></i> <span>Seguridad</span></div>
+    <div class="nav-item" onclick="changeTab('bypass', this)"><i class="fas fa-microchip"></i> <span>Bypass W11</span></div>
     <div class="nav-item" onclick="changeTab('isos', this)"><i class="fas fa-download"></i> <span>ISOs ESD</span></div>
     <div class="nav-item" onclick="changeTab('mant', this)"><i class="fas fa-tools"></i> <span>Mantenimiento</span></div>
     <div class="nav-item" onclick="changeTab('act', this)"><i class="fas fa-key"></i> <span>Activación</span></div>
@@ -91,6 +99,22 @@
         <div class="card">
             <h3>VirusTotal</h3>
             <button onclick="window.open('https://www.virustotal.com')">Abrir Analizador</button>
+        </div>
+    </div>
+
+    <div id="bypass" class="section">
+        <h1>Bypass Windows 11 (No TPM)</h1>
+        <div class="card">
+            <span class="step-tag">Paso 1: USB</span>
+            <p>Tener en el USB la ISO de W11, entrar a la carpeta <strong>sources</strong> y abrir CMD.</p>
+            <span class="step-tag">Paso 2: Comando Bypass</span>
+            <div class="cmd-box">setupprep.exe /product server</div>
+        </div>
+        <div class="card">
+            <span class="step-tag">Paso 3: Salto de Cuenta</span>
+            <p>En la pantalla de cuenta Microsoft, pulsa <strong>Shift + F10</strong> y ejecuta:</p>
+            <div class="cmd-box">start ms-cxh:localonly</div>
+            <p style="margin-top:10px; font-size: 0.85rem; color: var(--text-dim);">Esto te permite crear la cuenta local sin internet.</p>
         </div>
     </div>
 
@@ -128,7 +152,6 @@
 </main>
 
 <script>
-    // --- LOGIN ---
     const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
     let gKey = Math.random().toString(36).substring(2, 7).toUpperCase();
     document.getElementById('hint').innerText = "GUEST: " + gKey;
@@ -142,7 +165,6 @@
         } else { alert("Error"); }
     }
 
-    // --- NAVEGACIÓN ---
     function changeTab(id, el) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -150,26 +172,29 @@
         el.classList.add('active');
     }
 
-    // --- BLOQUEO EXTREMO (F12, CTRL+U, CTRL+SHIFT+I) ---
+    // --- BLOQUEO REFORZADO ---
     window.addEventListener('keydown', function(e) {
-        // Bloqueo F12
-        if (e.keyCode == 123) { e.preventDefault(); e.stopPropagation(); return false; }
-        // Bloqueo Ctrl+U
-        if (e.ctrlKey && e.keyCode == 85) { e.preventDefault(); e.stopPropagation(); return false; }
-        // Bloqueo Ctrl+Shift+I (DevTools)
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 73) { e.preventDefault(); e.stopPropagation(); return false; }
-        // Bloqueo Imprimir Pantalla
+        // Bloqueo F12, Ctrl+U, Ctrl+Shift+I
+        if (e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
+            e.preventDefault(); e.stopPropagation(); return false;
+        }
+
+        // Si presiona tecla Windows (Meta) solo sale el mensaje
+        if (e.key === "Meta") {
+            document.getElementById('blackout').style.display = 'flex';
+            setTimeout(() => { document.getElementById('blackout').style.display = 'none'; }, 800);
+        }
+
+        // Si presiona Imprimir Pantalla (con o sin Windows) vaciamos clipboard
         if (e.key === "PrintScreen" || e.keyCode == 44) {
+            navigator.clipboard.writeText(""); // Limpia el pegado
             document.getElementById('blackout').style.display = 'flex';
             setTimeout(() => { document.getElementById('blackout').style.display = 'none'; }, 1000);
-            navigator.clipboard.writeText("");
         }
-    }, true); // El "true" es clave: captura el evento antes que nadie
+    }, true);
 
-    // Bloqueo clic derecho
     document.addEventListener('contextmenu', e => e.preventDefault());
 
-    // Bloqueo por desenfoque (Capturas externas)
     window.addEventListener('blur', () => {
         document.getElementById('content-main').classList.add('blur-mode');
         document.getElementById('blackout').style.display = 'flex';
