@@ -35,11 +35,13 @@
             color: var(--text-main); display: flex; min-height: 100vh; overflow-x: hidden;
         }
 
+        /* CAPAS DE PROTECCIÓN */
         .client-active { user-select: none !important; -webkit-user-select: none !important; }
         .protected-mode { filter: blur(100px) brightness(0); opacity: 0; transition: 0.3s; }
 
+        /* PANTALLA DE BLOQUEO */
         #lock-screen {
-            position: fixed; inset: 0; background: rgba(5, 7, 10, 0.85); backdrop-filter: blur(25px);
+            position: fixed; inset: 0; background: rgba(5, 7, 10, 0.9); backdrop-filter: blur(25px);
             z-index: 10000; display: flex; align-items: center; justify-content: center; transition: 0.5s ease;
         }
         .lock-card {
@@ -55,6 +57,7 @@
             font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; text-transform: uppercase;
         }
 
+        /* NAVEGACIÓN LATERAL */
         nav {
             width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border);
             height: 100vh; position: fixed; padding: 30px 20px; display: flex; flex-direction: column; backdrop-filter: blur(10px);
@@ -66,17 +69,20 @@
         }
         .nav-item:hover, .nav-item.active { background: var(--primary-glow); color: var(--primary); }
 
+        /* CONTENIDO PRINCIPAL */
         main { margin-left: 280px; padding: 50px 80px; width: calc(100% - 280px); }
         header { margin-bottom: 40px; }
         header h1 { font-size: 2.2rem; font-weight: 800; display: flex; align-items: center; gap: 15px; }
         .section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; margin: 30px 0 20px; display: block; }
 
+        /* CUADRÍCULA BENTO */
         .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: 0.4s; height: 100%; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: 0.4s; height: 100%; position: relative; }
         .card:hover { border-color: var(--primary); background: rgba(22, 27, 34, 0.6); transform: translateY(-5px); }
         .card h3 { font-size: 1.1rem; color: #fff; margin-bottom: 8px; }
         .card p { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 15px; line-height: 1.4; }
 
+        /* COMANDOS Y BOTONES */
         .cmd-box {
             background: #010409; border: 1px solid var(--border); padding: 12px 16px;
             border-radius: 10px; display: flex; justify-content: space-between; align-items: center;
@@ -91,10 +97,13 @@
         }
         .action-link:hover { background: var(--primary); color: #000; border-color: var(--primary); }
 
+        .badge-premium { background: linear-gradient(45deg, #ffd700, #ff8c00); color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; position: absolute; top: 20px; right: 20px; }
+
         #toast {
             position: fixed; bottom: 30px; right: 30px; background: var(--success); color: white;
             padding: 12px 25px; border-radius: 12px; display: none; z-index: 10001; animation: slideUp 0.3s ease;
         }
+
         @keyframes slideUp { from { transform: translateY(100px); } to { transform: translateY(0); } }
 
         @media (max-width: 1100px) {
@@ -110,90 +119,79 @@
 <div id="lock-screen">
     <div class="lock-card">
         <div style="background: var(--primary-glow); width: 80px; height: 80px; border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-            <i class="fas fa-terminal" style="font-size: 2.2rem; color: var(--primary);"></i>
+            <i class="fas fa-shield-halved" style="font-size: 2.2rem; color: var(--primary);"></i>
         </div>
-        <h2 style="margin-bottom: 10px;">Acceso Técnico</h2>
+        <h2 style="margin-bottom: 10px;">Acceso al Toolkit</h2>
         <select id="role-select">
             <option value="user">Terminal: Invitado</option>
             <option value="admin">Terminal: Root (Admin)</option>
         </select>
-        <input type="password" id="pass-input" placeholder="Ingresar contraseña">
-        <button class="btn-primary" onclick="checkPass()">Autenticar</button>
+        <input type="password" id="pass-input" placeholder="Clave de sistema">
+        <button class="btn-primary" onclick="checkPass()">Iniciar Consola</button>
         <p id="hint-text" style="color:var(--primary); font-size:0.75rem; font-weight:700; margin-top:20px;"></p>
     </div>
 </div>
 
 <nav>
-    <div class="logo" onclick="location.reload()"><i class="fas fa-robot"></i> <span>IT CONSOLE</span></div>
-    <div class="nav-item active" onclick="showAll(this)"><i class="fas fa-columns"></i> <span>Dashboard</span></div>
-    <div class="nav-item" onclick="showSection('isos', 'fa-compact-disc', this)"><i class="fas fa-compact-disc"></i> <span>ISOs y Boot</span></div>
-    <div class="nav-item" onclick="showSection('seguridad', 'fa-shield-halved', this)"><i class="fas fa-shield-halved"></i> <span>Seguridad</span></div>
+    <div class="logo" onclick="location.reload()"><i class="fas fa-microchip"></i> <span>IT TOOLKIT</span></div>
+    <div class="nav-item active" onclick="showAll(this)"><i class="fas fa-home"></i> <span>Inicio</span></div>
+    <div class="nav-item" onclick="showSection('isos', 'fa-download', this)"><i class="fas fa-download"></i> <span>ISOs y Windows</span></div>
+    <div class="nav-item" onclick="showSection('mantenimiento', 'fa-screwdriver-wrench', this)"><i class="fas fa-screwdriver-wrench"></i> <span>Mantenimiento</span></div>
     <div class="nav-item" onclick="showSection('activacion', 'fa-key', this)"><i class="fas fa-key"></i> <span>Activación</span></div>
-    <div class="nav-item" onclick="showSection('mantenimiento', 'fa-tools', this)"><i class="fas fa-tools"></i> <span>Mantenimiento</span></div>
-    <div class="nav-item" onclick="showSection('optimizacion', 'fa-rocket', this)"><i class="fas fa-rocket"></i> <span>Optimización</span></div>
-    <div class="nav-item" onclick="showSection('hardware', 'fa-microchip', this)"><i class="fas fa-microchip"></i> <span>Hardware</span></div>
-    <div style="margin-top: auto;"><div class="nav-item" style="color: var(--danger);" onclick="lockPanel()"><i class="fas fa-power-off"></i> <span>Bloquear</span></div></div>
+    <div class="nav-item" onclick="showSection('optimizacion', 'fa-gauge-high', this)"><i class="fas fa-gauge-high"></i> <span>Rendimiento</span></div>
+    <div class="nav-item" onclick="showSection('hardware', 'fa-server', this)"><i class="fas fa-server"></i> <span>Hardware</span></div>
+    <div style="margin-top: auto;"><div class="nav-item" style="color: var(--danger);" onclick="lockPanel()"><i class="fas fa-lock"></i> <span>Cerrar</span></div></div>
 </nav>
 
 <main>
     <header>
         <h1 id="page-title"><i class="fas fa-layer-group"></i> Panel General</h1>
-        <p id="status-text">Consola técnica lista. Sistema estable.</p>
+        <p id="status-text">Bienvenido. Elige una categoría para empezar.</p>
     </header>
 
     <div id="content-area">
         
         <section id="isos" class="content-section">
-            <span class="section-title">Imágenes de Sistema y Booteo</span>
+            <span class="section-title">Descargas Oficiales ESD</span>
             <div class="bento-grid">
-                <div class="card" style="grid-column: span 4;">
-                    <h3>Windows 11</h3>
-                    <p>Descarga la ISO oficial o la herramienta de creación de medios.</p>
-                    <a href="#" onclick="openLink('https://www.microsoft.com/es-es/software-download/windows11')" class="action-link">Ir a Microsoft</a>
-                </div>
-                <div class="card" style="grid-column: span 4;">
-                    <h3>Windows 10</h3>
-                    <p>Descarga oficial para equipos que requieren estabilidad.</p>
-                    <a href="#" onclick="openLink('https://www.microsoft.com/es-es/software-download/windows10')" class="action-link">Ir a Microsoft</a>
+                <div class="card" style="grid-column: span 12;">
+                    <div class="badge-premium">OFICIAL</div>
+                    <h3>Manuals WinAndOffice</h3>
+                    <p>Acceso total a la base de datos de imágenes ISO, versiones ESD y guías de instalación originales de Microsoft.</p>
+                    <a href="#" onclick="openLink('https://manuals.winandoffice.com/es/categories-esd/')" class="action-link" style="background: var(--primary); color: #000;">Abrir Centro de Descargas ESD</a>
                 </div>
                 <div class="card" style="grid-column: span 4;">
                     <h3>Rufus</h3>
-                    <p>La mejor herramienta para crear USBs de arranque rápidos.</p>
-                    <a href="#" onclick="openLink('https://rufus.ie/es/')" class="action-link">Descargar Rufus</a>
+                    <p>Para crear USB Booteable rápido.</p>
+                    <a href="#" onclick="openLink('https://rufus.ie/es/')" class="action-link">Descargar</a>
                 </div>
-                <div class="card" style="grid-column: span 6;">
+                <div class="card" style="grid-column: span 4;">
                     <h3>Ventoy</h3>
-                    <p>Multiboot definitivo: mete varias ISOs en un solo USB sin formatear.</p>
-                    <a href="#" onclick="openLink('https://www.ventoy.net/en/download.html')" class="action-link">Descargar Ventoy</a>
+                    <p>USB Multiboot de alto nivel.</p>
+                    <a href="#" onclick="openLink('https://www.ventoy.net/en/download.html')" class="action-link">Descargar</a>
                 </div>
-                <div class="card" style="grid-column: span 6;">
-                    <h3>Windows ISO Downloader</h3>
-                    <p>Herramienta externa para bajar ISOs antiguas (Heidoc).</p>
-                    <a href="#" onclick="openLink('https://www.heidoc.net/joomla/technology-projects/microsoft/67-microsoft-windows-and-office-iso-download-tool')" class="action-link">Ir a Heidoc</a>
+                <div class="card" style="grid-column: span 4;">
+                    <h3>ISO Downloader</h3>
+                    <p>Utilidad Heidoc para versiones legacy.</p>
+                    <a href="#" onclick="openLink('https://www.heidoc.net/joomla/technology-projects/microsoft/67-microsoft-windows-and-office-iso-download-tool')" class="action-link">Descargar</a>
                 </div>
             </div>
         </section>
 
-        <section id="mantenimiento" class="content-section" style="margin-top:40px;">
-            <span class="section-title">Reparación de Sistema</span>
+        <section id="mantenimiento" class="content-section">
+            <span class="section-title">Reparación Crítica</span>
             <div class="bento-grid">
-                <div class="card" style="grid-column: span 12;">
-                    <h3>SFC & DISM (Reparación Profunda)</h3>
-                    <p>Repara la base de datos de Windows y archivos corruptos.</p>
+                <div class="card" style="grid-column: span 6;">
+                    <h3>SFC & DISM</h3>
+                    <p>Reparación profunda de imagen de sistema.</p>
                     <div class="cmd-box">
                         <code>dism /online /cleanup-image /restorehealth; sfc /scannow</code>
                         <i class="far fa-copy copy-icon" onclick="copyValue('dism /online /cleanup-image /restorehealth; sfc /scannow')"></i>
                     </div>
                 </div>
                 <div class="card" style="grid-column: span 6;">
-                    <h3>Resetear Windows Update</h3>
-                    <div class="cmd-box">
-                        <code>net stop wuauserv; rd /s /q %systemroot%\SoftwareDistribution; net start wuauserv</code>
-                        <i class="far fa-copy copy-icon" onclick="copyValue('net stop wuauserv; rd /s /q %systemroot%\SoftwareDistribution; net start wuauserv')"></i>
-                    </div>
-                </div>
-                <div class="card" style="grid-column: span 6;">
-                    <h3>Limpiar DNS y Red</h3>
+                    <h3>Reparar Red</h3>
+                    <p>Flush DNS y reseteo de protocolos.</p>
                     <div class="cmd-box">
                         <code>ipconfig /flushdns; netsh winsock reset</code>
                         <i class="far fa-copy copy-icon" onclick="copyValue('ipconfig /flushdns; netsh winsock reset')"></i>
@@ -202,50 +200,15 @@
             </div>
         </section>
 
-        <section id="activacion" class="content-section" style="margin-top:40px;">
-            <span class="section-title">Licenciamiento Digital</span>
+        <section id="activacion" class="content-section">
+            <span class="section-title">Activación (MAS)</span>
             <div class="card">
-                <h3>Microsoft Activation Scripts (MAS)</h3>
-                <p>El script más fiable para activar Windows y Office de por vida.</p>
+                <h3>Microsoft Activation Scripts</h3>
+                <p>Copia y pega este comando en PowerShell para activar Windows/Office.</p>
                 <div class="cmd-box">
                     <code>irm https://get.activated.win | iex</code>
                     <i class="far fa-copy copy-icon" onclick="copyValue('irm https://get.activated.win | iex')"></i>
                 </div>
-            </div>
-        </section>
-
-        <section id="seguridad" class="content-section" style="margin-top:40px;">
-            <span class="section-title">Análisis de Amenazas</span>
-            <div class="bento-grid">
-                <div class="card" style="grid-column: span 6;">
-                    <h3>VirusTotal</h3>
-                    <a href="#" onclick="openLink('https://www.virustotal.com')" class="action-link">Lanzar Escáner</a>
-                </div>
-                <div class="card" style="grid-column: span 6;">
-                    <h3>Hybrid Analysis</h3>
-                    <a href="#" onclick="openLink('https://www.hybrid-analysis.com')" class="action-link">Lanzar Sandbox</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="optimizacion" class="content-section" style="margin-top:40px;">
-            <span class="section-title">Ajustes de Rendimiento</span>
-            <div class="card">
-                <h3>Chris Titus Tool</h3>
-                <p>Elimina el bloatware y telemetría innecesaria de Windows.</p>
-                <div class="cmd-box">
-                    <code>irm christitus.com/win | iex</code>
-                    <i class="far fa-copy copy-icon" onclick="copyValue('irm christitus.com/win | iex')"></i>
-                </div>
-            </div>
-        </section>
-
-        <section id="hardware" class="content-section" style="margin-top:40px;">
-            <span class="section-title">Hardware</span>
-            <div class="bento-grid">
-                <div class="card" style="grid-column: span 4;"><h3>CrystalDisk</h3><a href="#" onclick="openLink('https://crystalmark.info/en/software/crystaldiskinfo/')" class="action-link">Abrir</a></div>
-                <div class="card" style="grid-column: span 4;"><h3>HWiNFO</h3><a href="#" onclick="openLink('https://www.hwinfo.com/download/')" class="action-link">Abrir</a></div>
-                <div class="card" style="grid-column: span 4;"><h3>MemTest86</h3><a href="#" onclick="openLink('https://www.memtest86.com/')" class="action-link">Abrir</a></div>
             </div>
         </section>
 
@@ -289,7 +252,7 @@
         sesion.rol = r;
         document.getElementById('lock-screen').style.opacity = '0';
         document.getElementById('lock-screen').style.pointerEvents = 'none';
-        document.getElementById('status-text').innerText = `Consola Activa | Nivel: ${r.toUpperCase()}`;
+        document.getElementById('status-text').innerText = `Consola Activa | ROL: ${r.toUpperCase()}`;
         if (r === 'user') {
             document.body.classList.add('client-active');
             sesion.temp = setTimeout(lockPanel, CONFIG.TIMEOUT);
