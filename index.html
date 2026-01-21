@@ -59,7 +59,7 @@
         main { margin-left: 280px; padding: 40px 60px; width: 100%; }
         header { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
 
-        .content-section { margin-bottom: 50px; display: block; } /* Por defecto se ven todas */
+        .content-section { margin-bottom: 50px; display: block; }
         .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
 
         .section-title {
@@ -91,9 +91,16 @@
             text-decoration: none; color: #fff; border: 1px solid var(--border);
         }
 
+        .tip {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 10px;
+            display: block;
+        }
+
         #toast {
             position: fixed; bottom: 20px; right: 20px; background: var(--success);
-            color: white; padding: 12px 25px; border-radius: 8px; display: none;
+            color: white; padding: 12px 25px; border-radius: 8px; display: none; z-index: 1000;
         }
 
         @media (max-width: 1024px) {
@@ -120,6 +127,7 @@
     <a onclick="showSection('activacion')" class="nav-btn" id="btn-activacion"><i class="fas fa-key"></i> <span>Activación</span></a>
     <a onclick="showSection('optimizacion')" class="nav-btn" id="btn-optimizacion"><i class="fas fa-rocket"></i> <span>Optimización</span></a>
     <a onclick="showSection('mantenimiento')" class="nav-btn" id="btn-mantenimiento"><i class="fas fa-tools"></i> <span>Mantenimiento</span></a>
+    <a onclick="showSection('bypass')" class="nav-btn" id="btn-bypass"><i class="fab fa-windows"></i> <span>Bypass W11</span></a>
     <a onclick="showSection('descargas')" class="nav-btn" id="btn-descargas"><i class="fas fa-download"></i> <span>Descargas</span></a>
 </nav>
 
@@ -192,6 +200,29 @@
         </div>
     </div>
 
+    <div id="bypass" class="content-section">
+        <span class="section-title">Bypass Windows 11</span>
+        <div class="bento-grid">
+            <div class="card span-12 filter-item">
+                <h3><i class="fas fa-microchip"></i> Saltar Requisitos (No TPM 2.0)</h3>
+                <p>En el USB de W11, entra en <b>sources</b>, abre CMD (Shift + F10) y ejecuta:</p>
+                <div class="cmd-wrapper">
+                    <span class="cmd-text">setupprep.exe /product server</span>
+                    <button class="copy-btn" onclick="copyText(this)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+            <div class="card span-12 filter-item">
+                <h3><i class="fas fa-user-plus"></i> Saltar Cuenta Microsoft</h3>
+                <p>Al pedir cuenta, presiona <b>Shift + F10</b> y escribe:</p>
+                <div class="cmd-wrapper">
+                    <span class="cmd-text">start ms-cxh:localonly</span>
+                    <button class="copy-btn" onclick="copyText(this)"><i class="far fa-copy"></i></button>
+                </div>
+                <span class="tip">Permite crear la cuenta local de forma inmediata.</span>
+            </div>
+        </div>
+    </div>
+
     <div id="descargas" class="content-section">
         <span class="section-title">Descargas</span>
         <div class="bento-grid">
@@ -212,8 +243,8 @@
         
         document.getElementById(id).style.display = 'block';
         document.getElementById('btn-' + id).classList.add('active');
-        document.getElementById('page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1);
-        document.getElementById('page-desc').innerText = "Apartado específico.";
+        document.getElementById('page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1).replace('Bypass', 'Bypass W11');
+        document.getElementById('page-desc').innerText = "Herramientas de " + id + ".";
     }
 
     // MOSTRAR TODO (MODO INICIAL)
@@ -234,18 +265,19 @@
             card.style.display = text.includes(input) ? "block" : "none";
         });
 
-        // Si el buscador está vacío y no hay sección activa, que se vea todo
         if(input === "" && !document.querySelector('.nav-btn.active')) {
             showAll();
         }
     }
 
+    // COPIAR TEXTO
     function copyText(btn) {
         const text = btn.parentElement.querySelector('.cmd-text').innerText;
-        navigator.clipboard.writeText(text);
-        const toast = document.getElementById('toast');
-        toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', 2000);
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2000);
+        });
     }
 </script>
 </body>
