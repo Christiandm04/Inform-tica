@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Tech Suite | Panel Maestro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #05070a;
+            --sidebar-bg: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.8);
+            --primary: #2f81f7;
+            --secondary: #7d8590;
+            --accent: #58a6ff;
+            --success: #238636;
+            --border: #30363d;
+            --text-main: #e6edf3;
+            --code-bg: #010409;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% 0%, #161b22 0%, #05070a 100%);
+            color: var(--text-main);
+            margin: 0; display: flex; min-height: 100vh;
+        }
+
+        /* --- BARRA LATERAL --- */
+        nav {
+            width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border);
+            height: 100vh; position: fixed; display: flex; flex-direction: column;
+            padding: 24px; z-index: 100;
+        }
+
+        .logo {
+            font-weight: 700; font-size: 1.2rem; color: var(--primary);
+            margin-bottom: 35px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+        }
+
+        .search-container { position: relative; margin-bottom: 25px; }
+        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--secondary); }
+        #main-search {
+            width: 100%; background: var(--bg-body); border: 1px solid var(--border);
+            color: white; padding: 10px 10px 10px 35px; border-radius: 8px; outline: none;
+        }
+
+        nav a {
+            color: var(--secondary); text-decoration: none; padding: 12px 14px;
+            border-radius: 8px; margin-bottom: 5px; display: flex; align-items: center;
+            gap: 12px; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+        }
+        nav a:hover, nav a.active { background: rgba(47, 129, 247, 0.15); color: var(--accent); }
+
+        /* --- CONTENIDO --- */
+        main { margin-left: 280px; padding: 40px 60px; width: 100%; }
+        header { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+
+        .content-section { margin-bottom: 50px; display: block; } /* Por defecto se ven todas */
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+
+        .section-title {
+            color: var(--accent); font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; font-size: 0.9rem; margin-bottom: 20px; display: block;
+        }
+
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; transition: 0.3s;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-3px); }
+
+        .span-12 { grid-column: span 12; }
+        .span-6 { grid-column: span 6; }
+        .span-4 { grid-column: span 4; }
+
+        .cmd-wrapper {
+            background: var(--code-bg); border-radius: 8px; padding: 15px;
+            margin: 15px 0; border: 1px solid #21262d;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .cmd-text { font-family: 'Fira Code', monospace; color: #79c0ff; font-size: 0.85rem; }
+        .copy-btn { background: none; border: none; color: var(--secondary); cursor: pointer; }
+
+        .link-button {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #21262d; padding: 12px; border-radius: 8px;
+            text-decoration: none; color: #fff; border: 1px solid var(--border);
+        }
+
+        #toast {
+            position: fixed; bottom: 20px; right: 20px; background: var(--success);
+            color: white; padding: 12px 25px; border-radius: 8px; display: none;
+        }
+
+        @media (max-width: 1024px) {
+            nav { width: 70px; padding: 20px 10px; }
+            nav span, .search-container, .logo span { display: none; }
+            main { margin-left: 70px; padding: 20px; }
+            .span-12, .span-6, .span-4 { grid-column: span 12; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo" onclick="showAll()">
+        <i class="fas fa-terminal"></i> <span>IT TOOLKIT</span>
+    </div>
+    
+    <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" id="main-search" placeholder="Buscar..." onkeyup="filterCards()">
+    </div>
+
+    <a onclick="showSection('seguridad')" class="nav-btn" id="btn-seguridad"><i class="fas fa-shield-virus"></i> <span>Seguridad</span></a>
+    <a onclick="showSection('activacion')" class="nav-btn" id="btn-activacion"><i class="fas fa-key"></i> <span>Activación</span></a>
+    <a onclick="showSection('optimizacion')" class="nav-btn" id="btn-optimizacion"><i class="fas fa-rocket"></i> <span>Optimización</span></a>
+    <a onclick="showSection('mantenimiento')" class="nav-btn" id="btn-mantenimiento"><i class="fas fa-tools"></i> <span>Mantenimiento</span></a>
+    <a onclick="showSection('descargas')" class="nav-btn" id="btn-descargas"><i class="fas fa-download"></i> <span>Descargas</span></a>
+</nav>
+
+<main>
+    <header>
+        <h1 id="page-title">Panel General</h1>
+        <p id="page-desc">Todos los recursos disponibles.</p>
+    </header>
+
+    <div id="seguridad" class="content-section">
+        <span class="section-title">Seguridad</span>
+        <div class="bento-grid">
+            <div class="card span-6 filter-item">
+                <h3><i class="fas fa-search-plus"></i> VirusTotal</h3>
+                <p>Analiza archivos corruptos o sospechosos.</p>
+                <a href="https://www.virustotal.com" target="_blank" class="link-button"><span>Abrir Web</span></a>
+            </div>
+            <div class="card span-6 filter-item">
+                <h3><i class="fas fa-bug"></i> Sandbox</h3>
+                <p>Prueba archivos en entorno seguro.</p>
+                <a href="https://www.hybrid-analysis.com" target="_blank" class="link-button"><span>Analizar</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div id="activacion" class="content-section">
+        <span class="section-title">Activación</span>
+        <div class="bento-grid">
+            <div class="card span-12 filter-item">
+                <h3><i class="fas fa-key"></i> MAS (Windows & Office)</h3>
+                <div class="cmd-wrapper">
+                    <span class="cmd-text">irm https://get.activated.win | iex</span>
+                    <button class="copy-btn" onclick="copyText(this)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="optimizacion" class="content-section">
+        <span class="section-title">Optimización</span>
+        <div class="bento-grid">
+            <div class="card span-12 filter-item">
+                <h3><i class="fas fa-bolt"></i> Chris Titus WinUtil</h3>
+                <p>Quita bloatware y telemetría.</p>
+                <div class="cmd-wrapper">
+                    <span class="cmd-text">irm christitus.com/win | iex</span>
+                    <button class="copy-btn" onclick="copyText(this)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mantenimiento" class="content-section">
+        <span class="section-title">Mantenimiento</span>
+        <div class="bento-grid">
+            <div class="card span-6 filter-item">
+                <h3><i class="fas fa-sync"></i> Winget Update</h3>
+                <div class="cmd-wrapper">
+                    <span class="cmd-text">winget upgrade --all</span>
+                    <button class="copy-btn" onclick="copyText(this)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+            <div class="card span-6 filter-item">
+                <h3><i class="fas fa-tools"></i> Reparar Sistema</h3>
+                <div class="cmd-wrapper">
+                    <span class="cmd-text">sfc /scannow; dism /online /cleanup-image /restorehealth</span>
+                    <button class="copy-btn" onclick="copyText(this)"><i class="far fa-copy"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="descargas" class="content-section">
+        <span class="section-title">Descargas</span>
+        <div class="bento-grid">
+            <div class="card span-4 filter-item"><h3>ISO Windows</h3><a href="https://manuals.winandoffice.com/es/.categories-esd/" target="_blank" class="link-button"><span>Link</span></a></div>
+            <div class="card span-4 filter-item"><h3>Ventoy</h3><a href="https://www.ventoy.net/" target="_blank" class="link-button"><span>Link</span></a></div>
+            <div class="card span-4 filter-item"><h3>Rufus</h3><a href="https://rufus.ie/" target="_blank" class="link-button"><span>Link</span></a></div>
+        </div>
+    </div>
+</main>
+
+<div id="toast">Copiado al portapapeles</div>
+
+<script>
+    // MOSTRAR SOLO UNA SECCIÓN
+    function showSection(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById(id).style.display = 'block';
+        document.getElementById('btn-' + id).classList.add('active');
+        document.getElementById('page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1);
+        document.getElementById('page-desc').innerText = "Apartado específico.";
+    }
+
+    // MOSTRAR TODO (MODO INICIAL)
+    function showAll() {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'block');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('page-title').innerText = "Panel General";
+        document.getElementById('page-desc').innerText = "Todos los recursos disponibles.";
+    }
+
+    // BUSCADOR
+    function filterCards() {
+        const input = document.getElementById('main-search').value.toLowerCase();
+        const cards = document.querySelectorAll('.filter-item');
+        
+        cards.forEach(card => {
+            const text = card.innerText.toLowerCase();
+            card.style.display = text.includes(input) ? "block" : "none";
+        });
+
+        // Si el buscador está vacío y no hay sección activa, que se vea todo
+        if(input === "" && !document.querySelector('.nav-btn.active')) {
+            showAll();
+        }
+    }
+
+    function copyText(btn) {
+        const text = btn.parentElement.querySelector('.cmd-text').innerText;
+        navigator.clipboard.writeText(text);
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+    }
+</script>
+</body>
+</html>
