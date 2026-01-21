@@ -3,148 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Tech Suite | Blindado</title>
+    <title>IT Tech Suite | Consola Blindada</title>
+    
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1828/1828304.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg: #0a0c10; --primary: #3fb1ff; --card: #161b22; --border: #30363d;
+            --bg-body: #0a0c10;
+            --sidebar-bg: rgba(13, 17, 23, 0.95);
+            --card-bg: rgba(22, 27, 34, 0.4);
+            --primary: #3fb1ff;
+            --primary-glow: rgba(63, 177, 255, 0.15);
+            --accent: #79c0ff;
+            --border: rgba(48, 54, 61, 0.8);
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
         }
 
-        /* EVITAR SELECCIÓN Y ARRASTRE */
+        /* --- BLINDAJE DE SEGURIDAD --- */
         * { 
             user-select: none !important; 
             -webkit-user-select: none !important;
             -webkit-user-drag: none !important;
+            cursor: default !important;
+        }
+        
+        button, .nav-item, a, .copy-icon { cursor: pointer !important; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main); display: flex; min-height: 100vh; overflow: hidden;
         }
 
-        body { 
-            background: var(--bg); color: #e6edf3; font-family: sans-serif; 
-            margin: 0; display: flex; height: 100vh; overflow: hidden;
-        }
-
-        /* CAPA DE BLOQUEO VISUAL (ANTI-CAPTURA) */
-        #blindfold {
-            position: fixed; inset: 0; background: #000; z-index: 999999;
+        /* Capa contra capturas (Flash Negro) */
+        #security-blackout {
+            position: fixed; inset: 0; background: #000; z-index: 1000000;
             display: none; align-items: center; justify-content: center;
         }
 
-        /* LOGIN ORIGINAL */
-        #lock-screen {
-            position: fixed; inset: 0; background: var(--bg); z-index: 100000;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .lock-card {
-            background: var(--card); padding: 40px; border-radius: 20px;
-            border: 1px solid var(--border); text-align: center; width: 320px;
-        }
-        input, select, button {
-            width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px;
-            border: 1px solid var(--border); background: #000; color: #fff;
-        }
-        button { background: var(--primary); color: #000; font-weight: bold; cursor: pointer; }
+        /* Desenfoque al perder el foco (Win+Shift+S / Alt+Tab) */
+        .protected-mode { filter: blur(100px) brightness(0); transition: 0.1s; }
 
-        /* INTERFAZ */
-        nav { width: 250px; border-right: 1px solid var(--border); padding: 20px; }
-        main { flex: 1; padding: 40px; overflow-y: auto; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .protected { filter: blur(100px); } /* Desenfoque al perder foco */
+        /* --- INTERFAZ --- */
+        nav {
+            width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border);
+            height: 100vh; padding: 30px 20px; display: flex; flex-direction: column;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
+        
+        .nav-item {
+            color: var(--text-dim); padding: 12px 16px; border-radius: 12px;
+            margin-bottom: 4px; display: flex; align-items: center; gap: 12px; transition: 0.2s;
+        }
+        .nav-item:hover, .nav-item.active { background: var(--primary-glow); color: var(--primary); }
+
+        main { flex: 1; padding: 50px; overflow-y: auto; }
+        .section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 2px; margin: 30px 0 20px; display: block; }
+
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; position: relative; }
+        
+        .cmd-box {
+            background: #010409; border: 1px solid var(--border); padding: 12px;
+            border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
+        }
+        code { font-family: 'Fira Code', monospace; color: var(--accent); font-size: 0.85rem; }
+
+        /* --- LOGIN --- */
+        #lock-screen { position: fixed; inset: 0; background: var(--bg-body); z-index: 100000; display: flex; align-items: center; justify-content: center; }
+        .lock-card { background: #161b22; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 380px; }
+        input, select { width: 100%; padding: 14px; margin-top: 15px; background: #000; border: 1px solid var(--border); color: white; border-radius: 12px; outline: none; cursor: text !important; }
+        .btn-login { width: 100%; padding: 14px; margin-top: 20px; background: var(--primary); border: none; border-radius: 12px; font-weight: 700; cursor: pointer !important; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #238636; color: white; padding: 12px 25px; border-radius: 12px; display: none; z-index: 10001; }
     </style>
 </head>
+
 <body oncontextmenu="return false">
 
-<div id="blindfold"><h1>CONTENIDO PROTEGIDO</h1></div>
+<div id="security-blackout"><h1>SISTEMA PROTEGIDO</h1></div>
 
 <div id="lock-screen">
     <div class="lock-card">
+        <i class="fas fa-terminal" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
         <h2>Acceso Técnico</h2>
         <select id="role-select">
-            <option value="user">Invitado</option>
-            <option value="admin">Administrador</option>
+            <option value="user">Terminal: Invitado</option>
+            <option value="admin">Terminal: Root (Admin)</option>
         </select>
-        <input type="password" id="pass-input" placeholder="Password">
-        <button onclick="checkPass()">ENTRAR</button>
-        <p id="hint" style="color:var(--primary); font-size:12px; margin-top:10px;"></p>
+        <input type="password" id="pass-input" placeholder="Clave de sistema">
+        <button class="btn-login" onclick="checkPass()">INICIAR CONSOLA</button>
+        <p id="hint-text" style="color:var(--primary); font-size:0.75rem; font-weight:700; margin-top:20px;"></p>
     </div>
 </div>
 
 <nav>
-    <h2 style="color:var(--primary)">IT TOOLKIT</h2>
-    <hr style="border-color:var(--border)">
-    <p>Seguridad</p>
-    <p>ISOs ESD</p>
-    <p>Activación</p>
-    <p>Hardware</p>
+    <div class="logo"><i class="fas fa-microchip"></i> <span>IT TOOLKIT</span></div>
+    <div class="nav-item active" onclick="showSection('seg')"><i class="fas fa-shield-halved"></i> <span>Seguridad</span></div>
+    <div class="nav-item" onclick="showSection('isos')"><i class="fas fa-download"></i> <span>ISOs y Windows</span></div>
+    <div class="nav-item" onclick="showSection('mant')"><i class="fas fa-screwdriver-wrench"></i> <span>Mantenimiento</span></div>
+    <div class="nav-item" onclick="showSection('act')"><i class="fas fa-key"></i> <span>Activación</span></div>
+    <div class="nav-item" onclick="showSection('hw')"><i class="fas fa-server"></i> <span>Hardware</span></div>
 </nav>
 
-<main id="app-body">
-    <h1>Panel de Control</h1>
-    <div class="card">
-        <h3>Manuals WinAndOffice (ISOs ESD)</h3>
-        <button onclick="window.open('https://manuals.winandoffice.com/es/categories-esd/')">Abrir Repositorio</button>
-    </div>
-    <div class="card">
-        <h3>Activación (MAS)</h3>
-        <p style="background:#000; padding:10px; border-radius:5px; color:#79c0ff">irm https://get.activated.win | iex</p>
+<main id="app-content">
+    <header>
+        <h1 id="page-title">Ciberseguridad</h1>
+        <p>Herramientas de análisis de malware y reputación.</p>
+    </header>
+
+    <div id="content-area">
+        <section id="seg" class="content-section">
+            <div class="bento-grid">
+                <div class="card" style="grid-column: span 6;">
+                    <h3>VirusTotal</h3>
+                    <p>Análisis de archivos y URLs.</p>
+                    <button class="btn-login" onclick="openL('https://www.virustotal.com')">Abrir VirusTotal</button>
+                </div>
+                <div class="card" style="grid-column: span 6;">
+                    <h3>Hybrid Analysis</h3>
+                    <p>Sandbox de malware.</p>
+                    <button class="btn-login" onclick="openL('https://www.hybrid-analysis.com')">Abrir Sandbox</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="isos" class="content-section" style="display:none;">
+            <div class="card">
+                <div style="color:var(--primary); font-weight:800; margin-bottom:10px;">OFICIAL Microsoft ESD</div>
+                <h3>Manuals WinAndOffice</h3>
+                <p>Descargas directas de ISOs, versiones ESD y guías paso a paso.</p>
+                <button class="btn-login" onclick="openL('https://manuals.winandoffice.com/es/categories-esd/')">Acceder al Repositorio</button>
+            </div>
+        </section>
+
+        <section id="mant" class="content-section" style="display:none;">
+            <div class="card">
+                <h3>Reparación SFC & DISM</h3>
+                <div class="cmd-box">
+                    <code>dism /online /cleanup-image /restorehealth; sfc /scannow</code>
+                    <i class="far fa-copy copy-icon" onclick="copyV('dism /online /cleanup-image /restorehealth; sfc /scannow')"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="act" class="content-section" style="display:none;">
+            <div class="card">
+                <h3>Microsoft Activation Scripts (MAS)</h3>
+                <p>Copiar y pegar en PowerShell como Administrador.</p>
+                <div class="cmd-box">
+                    <code>irm https://get.activated.win | iex</code>
+                    <i class="far fa-copy copy-icon" onclick="copyV('irm https://get.activated.win | iex')"></i>
+                </div>
+            </div>
+        </section>
+
+        <section id="hw" class="content-section" style="display:none;">
+            <div class="bento-grid">
+                <div class="card" style="grid-column: span 4;"><h3>CrystalDisk</h3><button class="btn-login" onclick="openL('https://crystalmark.info/en/software/crystaldiskinfo/')">Descargar</button></div>
+                <div class="card" style="grid-column: span 4;"><h3>HWiNFO</h3><button class="btn-login" onclick="openL('https://www.hwinfo.com/download/')">Descargar</button></div>
+                <div class="card" style="grid-column: span 4;"><h3>CPU-Z</h3><button class="btn-login" onclick="openL('https://www.cpuid.com/softwares/cpu-z.html')">Descargar</button></div>
+            </div>
+        </section>
     </div>
 </main>
 
+<div id="toast">Comando Copiado</div>
+
 <script>
-    // --- LOGIN ---
+    // --- LÓGICA DE LOGIN ORIGINAL ---
     const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
-    let guestKey = Math.random().toString(36).substring(2, 7).toUpperCase();
-    document.getElementById('hint').innerText = "CLAVE GUEST: " + guestKey;
+    let sesion = { role: null, guestKey: Math.random().toString(36).substring(2, 7).toUpperCase() };
+    document.getElementById('hint-text').innerText = "CLAVE INVITADO: " + sesion.guestKey;
 
     async function checkPass() {
         const p = document.getElementById('pass-input').value;
         const r = document.getElementById('role-select').value;
         const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p)).then(b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''));
 
-        if ((r === 'admin' && h === ADMIN_HASH) || (r === 'user' && p === guestKey)) {
+        if ((r === 'admin' && h === ADMIN_HASH) || (r === 'user' && p === sesion.guestKey)) {
+            sesion.role = r;
             document.getElementById('lock-screen').style.display = 'none';
-        } else { alert("Error"); }
+        } else { alert("Acceso Incorrecto"); }
     }
 
-    // --- BLINDAJE CONTRA CAPTURAS (INTERFERENCIA) ---
-    
-    function activateBlindfold() {
-        const bf = document.getElementById('blindfold');
-        bf.style.display = 'flex';
-        // Limpiamos el portapapeles inmediatamente
-        navigator.clipboard.writeText("Captura bloqueada por seguridad.");
-        setTimeout(() => { bf.style.display = 'none'; }, 600);
+    // --- BLINDAJE ANTI-CAPTURA ---
+    function flashBlack() {
+        const b = document.getElementById('security-blackout');
+        b.style.display = 'flex';
+        navigator.clipboard.writeText("SISTEMA PROTEGIDO - NO SE PERMITEN CAPTURAS");
+        setTimeout(() => b.style.display = 'none', 500);
     }
 
     document.addEventListener('keydown', (e) => {
-        // Bloqueo de F12 y Ctrl+U
-        if (e.key === "F12" || (e.ctrlKey && e.key === "u")) {
-            e.preventDefault();
+        // Bloquear F12, Ctrl+U, Ctrl+Shift+I
+        if (e.key === "F12" || (e.ctrlKey && e.key === "u") || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+            e.preventDefault(); return false;
         }
-
-        // Detección de Windows + Imprimir Pantalla y otros atajos de captura
-        // Tecla Windows (Meta), Shift, e Imprimir Pantalla (PrintScreen)
-        if (e.key === "PrintScreen" || e.key === "Snapshot" || (e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "p")) {
-            activateBlindfold();
+        // Bloquear PrintScreen / Win+ImprPant
+        if (e.key === "PrintScreen" || e.key === "Snapshot" || (e.metaKey && e.key === "PrintScreen")) {
+            flashBlack();
         }
     });
 
-    // Si el usuario presiona la tecla Windows, el navegador pierde el foco. 
-    // Al perder el foco, desenfocamos la app totalmente.
+    // Detectar pérdida de foco (Alt+Tab o Herramienta Recortes)
     window.addEventListener('blur', () => {
-        document.getElementById('app-body').classList.add('protected');
-        activateBlindfold(); // También disparamos el flash negro por si acaso
+        document.getElementById('app-content').classList.add('protected-mode');
+        flashBlack();
     });
-
     window.addEventListener('focus', () => {
-        document.getElementById('app-body').classList.remove('protected');
+        document.getElementById('app-content').classList.remove('protected-mode');
     });
 
-    // Bloqueo preventivo de atajos comunes
-    window.onkeydown = function(e) {
-        if (e.keyCode == 44) { // Print Screen
-            activateBlindfold();
-            return false;
-        }
-    };
+    // --- NAVEGACIÓN ---
+    function showSection(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).style.display = 'block';
+        event.currentTarget.classList.add('active');
+        document.getElementById('page-title').innerText = event.currentTarget.innerText;
+    }
+
+    function copyV(t) {
+        if(sesion.role !== 'admin') { alert("Función restringida a Admin"); return; }
+        navigator.clipboard.writeText(t);
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+    }
+
+    function openL(u) { window.open(u, '_blank'); }
 </script>
+
 </body>
 </html>
