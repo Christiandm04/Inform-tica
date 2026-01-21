@@ -3,194 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Tech Suite | Pro</title>
-    
+    <title>IT Tech Suite | Blindado</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --bg-body: #0a0c10;
-            --sidebar-bg: rgba(13, 17, 23, 0.95);
-            --card-bg: rgba(22, 27, 34, 0.4);
-            --primary: #3fb1ff;
-            --primary-glow: rgba(63, 177, 255, 0.15);
-            --accent: #79c0ff;
-            --border: rgba(48, 54, 61, 0.8);
-            --text-main: #e6edf3;
-            --text-dim: #8b949e;
+            --bg: #0a0c10; --primary: #3fb1ff; --card: #161b22; --border: #30363d;
         }
 
-        /* --- BLINDAJE --- */
-        * { user-select: none !important; -webkit-user-drag: none !important; }
-        
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-body); color: var(--text-main);
-            display: flex; min-height: 100vh; overflow: hidden;
+        /* EVITAR SELECCIÓN Y ARRASTRE */
+        * { 
+            user-select: none !important; 
+            -webkit-user-select: none !important;
+            -webkit-user-drag: none !important;
         }
 
-        /* Flash de seguridad: se activa al intentar capturar */
-        #security-flash {
-            position: fixed; inset: 0; background: #000; z-index: 1000000;
+        body { 
+            background: var(--bg); color: #e6edf3; font-family: sans-serif; 
+            margin: 0; display: flex; height: 100vh; overflow: hidden;
+        }
+
+        /* CAPA DE BLOQUEO VISUAL (ANTI-CAPTURA) */
+        #blindfold {
+            position: fixed; inset: 0; background: #000; z-index: 999999;
             display: none; align-items: center; justify-content: center;
         }
 
-        .protected-mode { filter: blur(100px) brightness(0); transition: 0.1s; }
+        /* LOGIN ORIGINAL */
+        #lock-screen {
+            position: fixed; inset: 0; background: var(--bg); z-index: 100000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .lock-card {
+            background: var(--card); padding: 40px; border-radius: 20px;
+            border: 1px solid var(--border); text-align: center; width: 320px;
+        }
+        input, select, button {
+            width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px;
+            border: 1px solid var(--border); background: #000; color: #fff;
+        }
+        button { background: var(--primary); color: #000; font-weight: bold; cursor: pointer; }
 
-        /* --- UI --- */
-        nav { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 30px 20px; display: flex; flex-direction: column; }
-        .nav-item { color: var(--text-dim); padding: 12px 16px; border-radius: 12px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
-        .nav-item.active { background: var(--primary-glow); color: var(--primary); }
-
-        main { flex: 1; padding: 50px; overflow-y: auto; }
-        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: 0.3s; }
-        .cmd-box { background: #010409; border: 1px solid var(--border); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        code { font-family: 'Fira Code', monospace; color: var(--accent); font-size: 0.85rem; }
-
-        #lock-screen { position: fixed; inset: 0; background: var(--bg-body); z-index: 100000; display: flex; align-items: center; justify-content: center; }
-        .lock-card { background: #161b22; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 380px; }
-        input, select { width: 100%; padding: 14px; margin-top: 15px; background: #000; border: 1px solid var(--border); color: white; border-radius: 12px; outline: none; }
-        .btn-login { width: 100%; padding: 14px; margin-top: 20px; background: var(--primary); border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+        /* INTERFAZ */
+        nav { width: 250px; border-right: 1px solid var(--border); padding: 20px; }
+        main { flex: 1; padding: 40px; overflow-y: auto; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .protected { filter: blur(100px); } /* Desenfoque al perder foco */
     </style>
 </head>
-
 <body oncontextmenu="return false">
 
-<div id="security-flash"><h1>CONTENIDO PROTEGIDO</h1></div>
+<div id="blindfold"><h1>CONTENIDO PROTEGIDO</h1></div>
 
 <div id="lock-screen">
     <div class="lock-card">
-        <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-        <h2>Acceso al Panel</h2>
+        <h2>Acceso Técnico</h2>
         <select id="role-select">
-            <option value="user">Terminal: Invitado</option>
-            <option value="admin">Terminal: Root (Admin)</option>
+            <option value="user">Invitado</option>
+            <option value="admin">Administrador</option>
         </select>
-        <input type="password" id="pass-input" placeholder="Contraseña">
-        <button class="btn-login" onclick="checkPass()">ENTRAR</button>
-        <p id="hint-text" style="color:var(--primary); font-size:0.75rem; margin-top:20px;"></p>
+        <input type="password" id="pass-input" placeholder="Password">
+        <button onclick="checkPass()">ENTRAR</button>
+        <p id="hint" style="color:var(--primary); font-size:12px; margin-top:10px;"></p>
     </div>
 </div>
 
 <nav>
-    <div style="font-size:1.4rem; font-weight:800; color:var(--primary); margin-bottom:40px;"><i class="fas fa-microchip"></i> <span>IT TOOLKIT</span></div>
-    <div class="nav-item active" onclick="showSec('all')"><i class="fas fa-home"></i> Dashboard</div>
-    <div class="nav-item" onclick="showSec('seg')"><i class="fas fa-shield-halved"></i> Seguridad</div>
-    <div class="nav-item" onclick="showSec('isos')"><i class="fas fa-download"></i> ISOs y Windows</div>
-    <div class="nav-item" onclick="showSec('mant')"><i class="fas fa-tools"></i> Mantenimiento</div>
-    <div class="nav-item" onclick="showSec('act')"><i class="fas fa-key"></i> Activación</div>
-    <div class="nav-item" onclick="showSec('hw')"><i class="fas fa-server"></i> Hardware</div>
+    <h2 style="color:var(--primary)">IT TOOLKIT</h2>
+    <hr style="border-color:var(--border)">
+    <p>Seguridad</p>
+    <p>ISOs ESD</p>
+    <p>Activación</p>
+    <p>Hardware</p>
 </nav>
 
-<main>
-    <header style="margin-bottom:40px;">
-        <h1 id="p-title">Panel General</h1>
-        <p id="status-text">Listo para operar.</p>
-    </header>
-
-    <div id="content">
-        <section id="seg" class="s-content">
-            <div class="bento-grid">
-                <div class="card" style="grid-column: span 6"><h3>VirusTotal</h3><a href="javascript:void(0)" onclick="openL('https://www.virustotal.com')" style="color:var(--primary)">Abrir Escáner</a></div>
-                <div class="card" style="grid-column: span 6"><h3>Hybrid Analysis</h3><a href="javascript:void(0)" onclick="openL('https://www.hybrid-analysis.com')" style="color:var(--primary)">Abrir Sandbox</a></div>
-            </div>
-        </section>
-
-        <section id="isos" class="s-content" style="margin-top:20px">
-            <div class="card">
-                <h3>Manuals WinAndOffice (ESD)</h3>
-                <p>Descargas oficiales de Microsoft y guías técnicas.</p>
-                <a href="javascript:void(0)" onclick="openL('https://manuals.winandoffice.com/es/categories-esd/')" style="display:block; background:var(--primary); color:black; text-align:center; padding:10px; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px">Acceder a Descargas</a>
-            </div>
-        </section>
-
-        <section id="mant" class="s-content" style="margin-top:20px">
-            <div class="card">
-                <h3>SFC & DISM</h3>
-                <div class="cmd-box"><code>dism /online /cleanup-image /restorehealth; sfc /scannow</code><i class="far fa-copy" onclick="copy('dism /online /cleanup-image /restorehealth; sfc /scannow')"></i></div>
-            </div>
-        </section>
-
-        <section id="act" class="s-content" style="margin-top:20px">
-            <div class="card">
-                <h3>Microsoft Activation Scripts (MAS)</h3>
-                <div class="cmd-box"><code>irm https://get.activated.win | iex</code><i class="far fa-copy" onclick="copy('irm https://get.activated.win | iex')"></i></div>
-            </div>
-        </section>
-
-        <section id="hw" class="s-content" style="margin-top:20px">
-            <div class="bento-grid">
-                <div class="card" style="grid-column: span 4"><h3>CrystalDisk</h3><a href="javascript:void(0)" onclick="openL('https://crystalmark.info/en/software/crystaldiskinfo/')" style="color:var(--primary)">Descargar</a></div>
-                <div class="card" style="grid-column: span 4"><h3>HWiNFO</h3><a href="javascript:void(0)" onclick="openL('https://www.hwinfo.com/download/')" style="color:var(--primary)">Descargar</a></div>
-                <div class="card" style="grid-column: span 4"><h3>CPU-Z</h3><a href="javascript:void(0)" onclick="openL('https://www.cpuid.com/softwares/cpu-z.html')" style="color:var(--primary)">Descargar</a></div>
-            </div>
-        </section>
+<main id="app-body">
+    <h1>Panel de Control</h1>
+    <div class="card">
+        <h3>Manuals WinAndOffice (ISOs ESD)</h3>
+        <button onclick="window.open('https://manuals.winandoffice.com/es/categories-esd/')">Abrir Repositorio</button>
+    </div>
+    <div class="card">
+        <h3>Activación (MAS)</h3>
+        <p style="background:#000; padding:10px; border-radius:5px; color:#79c0ff">irm https://get.activated.win | iex</p>
     </div>
 </main>
 
 <script>
-    // --- LOGIN ORIGINAL ---
-    const CONFIG = { ADMIN_HASH: "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9" };
-    let session = { role: null, guestKey: Math.random().toString(36).substring(2, 7).toUpperCase() };
-    document.getElementById('hint-text').innerText = "CLAVE GUEST: " + session.guestKey;
-
-    async function hash(t) {
-        const e = new TextEncoder().encode(t);
-        const b = await crypto.subtle.digest('SHA-256', e);
-        return Array.from(new Uint8Array(b)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    // --- LOGIN ---
+    const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+    let guestKey = Math.random().toString(36).substring(2, 7).toUpperCase();
+    document.getElementById('hint').innerText = "CLAVE GUEST: " + guestKey;
 
     async function checkPass() {
-        const i = document.getElementById('pass-input').value;
+        const p = document.getElementById('pass-input').value;
         const r = document.getElementById('role-select').value;
-        if (r === 'admin') {
-            if (await hash(i) === CONFIG.ADMIN_HASH) start(r); else alert("Error");
-        } else {
-            if (i === session.guestKey) start(r); else alert("Error");
-        }
+        const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p)).then(b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''));
+
+        if ((r === 'admin' && h === ADMIN_HASH) || (r === 'user' && p === guestKey)) {
+            document.getElementById('lock-screen').style.display = 'none';
+        } else { alert("Error"); }
     }
 
-    function start(r) {
-        session.role = r;
-        document.getElementById('lock-screen').style.display = 'none';
-        document.getElementById('status-text').innerText = "Sesión: " + r.toUpperCase();
+    // --- BLINDAJE CONTRA CAPTURAS (INTERFERENCIA) ---
+    
+    function activateBlindfold() {
+        const bf = document.getElementById('blindfold');
+        bf.style.display = 'flex';
+        // Limpiamos el portapapeles inmediatamente
+        navigator.clipboard.writeText("Captura bloqueada por seguridad.");
+        setTimeout(() => { bf.style.display = 'none'; }, 600);
     }
 
-    // --- BLINDAJE ANTI-CAPTURA ---
     document.addEventListener('keydown', (e) => {
-        // Bloquear F12, Ctrl+U, Ctrl+Shift+I
-        if (e.key === "F12" || (e.ctrlKey && e.key === "u") || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+        // Bloqueo de F12 y Ctrl+U
+        if (e.key === "F12" || (e.ctrlKey && e.key === "u")) {
             e.preventDefault();
         }
-        
-        // Bloquear PrintScreen y combinaciones de captura
-        if (e.key === "PrintScreen" || (e.metaKey && e.shiftKey && e.key === "S") || (e.metaKey && e.key === "PrintScreen")) {
-            document.getElementById('security-flash').style.display = 'flex';
-            navigator.clipboard.writeText("ACCESO DENEGADO"); // Limpia el portapapeles para que no puedan pegar
-            setTimeout(() => { document.getElementById('security-flash').style.display = 'none'; }, 500);
+
+        // Detección de Windows + Imprimir Pantalla y otros atajos de captura
+        // Tecla Windows (Meta), Shift, e Imprimir Pantalla (PrintScreen)
+        if (e.key === "PrintScreen" || e.key === "Snapshot" || (e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "p")) {
+            activateBlindfold();
         }
     });
 
-    // Si el usuario cambia de ventana (Alt+Tab / Herramienta Recortes), se desenfoca
-    window.addEventListener('blur', () => { document.body.classList.add('protected-mode'); });
-    window.addEventListener('focus', () => { document.body.classList.remove('protected-mode'); });
+    // Si el usuario presiona la tecla Windows, el navegador pierde el foco. 
+    // Al perder el foco, desenfocamos la app totalmente.
+    window.addEventListener('blur', () => {
+        document.getElementById('app-body').classList.add('protected');
+        activateBlindfold(); // También disparamos el flash negro por si acaso
+    });
 
-    // --- FUNCIONES PANEL ---
-    function showSec(id) {
-        const secs = document.querySelectorAll('.s-content');
-        secs.forEach(s => s.style.display = (id === 'all' || s.id === id) ? 'block' : 'none');
-    }
+    window.addEventListener('focus', () => {
+        document.getElementById('app-body').classList.remove('protected');
+    });
 
-    function copy(t) {
-        if(session.role !== 'admin') { alert("Solo Admin"); return; }
-        navigator.clipboard.writeText(t);
-        alert("Copiado");
-    }
-
-    function openL(u) { window.open(u, '_blank'); }
+    // Bloqueo preventivo de atajos comunes
+    window.onkeydown = function(e) {
+        if (e.keyCode == 44) { // Print Screen
+            activateBlindfold();
+            return false;
+        }
+    };
 </script>
-
 </body>
 </html>
