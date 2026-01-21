@@ -21,13 +21,46 @@
             --warning: #d29922;
         }
 
-        * { box-sizing: border-box; }
+        * { 
+            box-sizing: border-box; 
+            /* Protección: Evitar selección de texto */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Protección: Ocultar todo al intentar imprimir o sacar PDF */
+        @media print {
+            body { display: none !important; }
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-body);
             background-image: radial-gradient(circle at 50% 0%, #161b22 0%, #05070a 100%);
             color: var(--text-main);
             margin: 0; display: flex; min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- PANTALLA DE BLOQUEO --- */
+        #lock-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-body); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .lock-card {
+            background: var(--sidebar-bg); padding: 30px; border-radius: 15px;
+            border: 1px solid var(--border); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .lock-card input {
+            padding: 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--code-bg); color: white; margin-top: 15px; width: 200px; outline: none;
+        }
+        .lock-card button {
+            padding: 12px 20px; background: var(--primary); color: white;
+            border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold;
         }
 
         /* --- BARRA LATERAL --- */
@@ -107,7 +140,17 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false">
+
+<div id="lock-screen">
+    <div class="lock-card">
+        <i class="fas fa-user-shield" style="font-size: 3rem; color: var(--primary);"></i>
+        <h2 style="color:white; margin-top:15px;">Acceso Privado</h2>
+        <input type="password" id="pass-input" placeholder="Contraseña">
+        <br>
+        <button onclick="checkPass()">Desbloquear Panel</button>
+    </div>
+</div>
 
 <nav>
     <div class="logo" onclick="showAll()">
@@ -266,6 +309,33 @@
 <div id="toast">Copiado al portapapeles</div>
 
 <script>
+    // --- SEGURIDAD: CONTROL DE ACCESO ---
+    function checkPass() {
+        const pass = document.getElementById('pass-input').value;
+        const correctPass = "admin123"; // CAMBIA ESTO POR TU CLAVE
+        if(pass === correctPass) {
+            document.getElementById('lock-screen').style.display = 'none';
+        } else {
+            alert("Acceso denegado.");
+        }
+    }
+
+    // Permitir "Enter" en el input de password
+    document.getElementById('pass-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') checkPass();
+    });
+
+    // --- SEGURIDAD: BLOQUEO DE TECLAS (F12, CTRL+U, etc) ---
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123) return false; // F12
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        if (e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)) return false;
+    };
+
+    // --- FUNCIONALIDAD DEL PANEL ---
     function showSection(id) {
         document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -297,7 +367,7 @@
         const text = btn.parentElement.querySelector('.cmd-text').innerText;
         navigator.clipboard.writeText(text).then(() => {
             const toast = document.getElementById('toast');
-            toast.style.display = 'block';
+            toast.style.display = 'block'
             setTimeout(() => toast.style.display = 'none', 2000);
         });
     }
