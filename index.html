@@ -20,30 +20,98 @@
         }
 
         /* --- BLINDAJE --- */
-        * { user-select: none !important; -webkit-user-drag: none !important; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; margin: 0; }
+        * { 
+            user-select: none !important; 
+            -webkit-user-drag: none !important; 
+            box-sizing: border-box; /* Crucial para móviles */
+        }
 
-        #blackout { position: fixed; inset: 0; background: #000; z-index: 2000000; display: none; align-items: center; justify-content: center; color: white; text-align: center; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            display: flex; 
+            flex-direction: row; /* Default PC */
+            height: 100vh; 
+            overflow: hidden; 
+            margin: 0; 
+        }
+
+        #blackout { position: fixed; inset: 0; background: #000; z-index: 2000000; display: none; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
         .blur-mode { filter: blur(100px) brightness(0) !important; transition: 0.1s; }
 
-        /* --- UI --- */
-        nav { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 30px 20px; display: flex; flex-direction: column; z-index: 100; }
+        /* --- UI NAVEGACIÓN --- */
+        nav { 
+            width: 280px; 
+            background: var(--sidebar-bg); 
+            border-right: 1px solid var(--border); 
+            padding: 30px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 100; 
+            flex-shrink: 0;
+        }
+
         .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
-        .nav-item { color: var(--text-dim); padding: 12px 16px; border-radius: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
+        .nav-item { color: var(--text-dim); padding: 12px 16px; border-radius: 12px; margin-bottom: 5px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .nav-item.active { background: rgba(63, 177, 255, 0.15); color: var(--primary); }
 
-        main { flex: 1; padding: 50px; overflow-y: auto; position: relative; }
-        .section { display: none; }
+        /* --- CONTENIDO --- */
+        main { 
+            flex: 1; 
+            padding: 40px; 
+            overflow-y: auto; 
+            position: relative; 
+            width: 100%;
+        }
+
+        .section { display: none; max-width: 900px; margin: 0 auto; }
         .section.active { display: block; animation: fadeIn 0.3s ease; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
-        .cmd-box { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 12px; font-family: 'Fira Code', monospace; color: #79c0ff; margin-top: 10px; }
         
-        button { width: 100%; padding: 12px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 25px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .cmd-box { background: #010409; border: 1px solid var(--border); padding: 15px; border-radius: 12px; font-family: 'Fira Code', monospace; color: #79c0ff; margin-top: 10px; word-break: break-all; font-size: 0.9rem; }
+        
+        button { width: 100%; padding: 14px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        button:hover { filter: brightness(1.2); }
 
         /* LOGIN */
-        #lock-screen { position: fixed; inset: 0; background: var(--bg-body); z-index: 100000; display: flex; align-items: center; justify-content: center; }
-        .lock-card { background: #161b22; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 350px; }
+        #lock-screen { position: fixed; inset: 0; background: var(--bg-body); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .lock-card { background: #161b22; padding: 40px; border-radius: 24px; border: 1px solid var(--border); text-align: center; width: 100%; max-width: 350px; }
         input, select { width: 100%; padding: 14px; margin-top: 15px; background: #000; border: 1px solid var(--border); color: white; border-radius: 12px; outline: none; }
+
+        /* --- ADAPTACIÓN MÓVIL (MEDIA QUERIES) --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            
+            nav { 
+                width: 100%; 
+                height: auto; 
+                padding: 10px; 
+                flex-direction: row; 
+                overflow-x: auto; 
+                border-right: none; 
+                border-bottom: 1px solid var(--border);
+                gap: 10px;
+            }
+
+            .logo { display: none; } /* Ocultamos logo en móvil para ahorrar espacio */
+            
+            .nav-item { 
+                padding: 10px; 
+                margin-bottom: 0; 
+                font-size: 0.8rem; 
+                flex-direction: column; 
+                gap: 5px; 
+                min-width: 80px;
+                text-align: center;
+            }
+
+            main { padding: 20px; }
+            h1 { font-size: 1.5rem; }
+            .card { padding: 15px; }
+        }
     </style>
 </head>
 
@@ -51,30 +119,31 @@
 
 <div id="blackout">
     <div>
-        <i class="fas fa-shield-virus" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <i class="fas fa-shield-virus" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
         <h1>SISTEMA PROTEGIDO</h1>
-        <p>Captura bloqueada y portapapeles vaciado.</p>
+        <p>Acceso restringido detectado.</p>
     </div>
 </div>
 
 <div id="lock-screen">
     <div class="lock-card">
-        <h2>IT Toolkit</h2>
+        <div class="logo" style="justify-content: center; margin-bottom: 20px;"><i class="fas fa-microchip"></i> IT Toolkit</div>
+        <h2>Acceso</h2>
         <select id="role-select">
             <option value="user">Invitado</option>
             <option value="admin">Administrador</option>
         </select>
         <input type="password" id="pass-input" placeholder="Password">
         <button onclick="checkPass()">ACCEDER</button>
-        <p id="hint" style="color:var(--primary); font-size:12px; margin-top:15px; font-weight:700;"></p>
+        <p id="hint" style="color:var(--primary); font-size:11px; margin-top:15px; font-weight:700; letter-spacing: 1px;"></p>
     </div>
 </div>
 
 <nav>
     <div class="logo"><i class="fas fa-microchip"></i> <span>IT TOOLKIT</span></div>
     <div class="nav-item active" onclick="changeTab('seg', this)"><i class="fas fa-shield-halved"></i> <span>Seguridad</span></div>
-    <div class="nav-item" onclick="changeTab('bypass', this)"><i class="fas fa-microchip"></i> <span>Bypass W11</span></div>
-    <div class="nav-item" onclick="changeTab('isos', this)"><i class="fas fa-download"></i> <span>ISOs ESD</span></div>
+    <div class="nav-item" onclick="changeTab('bypass', this)"><i class="fas fa-microchip"></i> <span>Bypass</span></div>
+    <div class="nav-item" onclick="changeTab('isos', this)"><i class="fas fa-download"></i> <span>ISOs</span></div>
     <div class="nav-item" onclick="changeTab('mant', this)"><i class="fas fa-tools"></i> <span>Mantenimiento</span></div>
     <div class="nav-item" onclick="changeTab('act', this)"><i class="fas fa-key"></i> <span>Activación</span></div>
 </nav>
@@ -82,94 +151,106 @@
 <main id="content-main">
     <div id="seg" class="section active">
         <h1>Seguridad</h1>
-        <div class="card"><h3>VirusTotal</h3><button onclick="window.open('https://www.virustotal.com')">Abrir</button></div>
+        <div class="card">
+            <h3>VirusTotal</h3>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Analiza archivos y URLs sospechosas.</p>
+            <button onclick="window.open('https://www.virustotal.com')">Abrir Portal</button>
+        </div>
     </div>
 
     <div id="bypass" class="section">
-        <h1>Bypass Windows 11 (No TPM)</h1>
+        <h1>Bypass Windows 11</h1>
         <div class="card">
-            <p><strong>1.</strong> En el USB de W11, carpeta <strong>sources</strong>, abre CMD:</p>
+            <p><strong>1. Saltar requisitos de hardware:</strong></p>
             <div class="cmd-box">setupprep.exe /product server</div>
         </div>
         <div class="card">
-            <p><strong>2.</strong> En la pantalla de cuenta, <strong>Shift + F10</strong> y ejecuta:</p>
+            <p><strong>2. Omitir cuenta Microsoft (OOBE):</strong></p>
             <div class="cmd-box">start ms-cxh:localonly</div>
         </div>
     </div>
 
     <div id="isos" class="section">
         <h1>ISOs Oficiales</h1>
-        <div class="card"><button onclick="window.open('https://manuals.winandoffice.com/es/categories-esd/')">Ver Repositorio</button></div>
+        <div class="card">
+            <p style="color: var(--text-dim);">Repositorio de imágenes ESD originales.</p>
+            <button onclick="window.open('https://manuals.winandoffice.com/es/categories-esd/')">Ir al Repositorio</button>
+        </div>
     </div>
 
     <div id="mant" class="section">
         <h1>Mantenimiento</h1>
-        <div class="card"><div class="cmd-box">dism /online /cleanup-image /restorehealth; sfc /scannow</div></div>
+        <div class="card">
+            <p>Reparación de imagen y sistema:</p>
+            <div class="cmd-box">dism /online /cleanup-image /restorehealth; sfc /scannow</div>
+        </div>
     </div>
 
     <div id="act" class="section">
-        <h1>Activación</h1>
-        <div class="card"><div class="cmd-box">irm https://get.activated.win | iex</div></div>
+        <h1>Activación Digital</h1>
+        <div class="card">
+            <p>Ejecutar script de activación (MAS):</p>
+            <div class="cmd-box">irm https://get.activated.win | iex</div>
+        </div>
     </div>
 </main>
 
 <script>
+    // --- LÓGICA DE ACCESO ---
     const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
     let gKey = Math.random().toString(36).substring(2, 7).toUpperCase();
-    document.getElementById('hint').innerText = "GUEST: " + gKey;
+    document.getElementById('hint').innerText = "CLAVE GUEST: " + gKey;
 
     async function checkPass() {
         const p = document.getElementById('pass-input').value;
         const r = document.getElementById('role-select').value;
         const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p)).then(b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''));
+        
         if ((r === 'admin' && h === ADMIN_HASH) || (r === 'user' && p === gKey)) {
-            document.getElementById('lock-screen').style.display = 'none';
-        } else { alert("Error"); }
+            document.getElementById('lock-screen').style.opacity = '0';
+            setTimeout(() => { document.getElementById('lock-screen').style.display = 'none'; }, 300);
+        } else { 
+            alert("Acceso denegado"); 
+        }
     }
 
+    // --- NAVEGACIÓN ---
     function changeTab(id, el) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
+        
+        // Scroll al inicio en móviles al cambiar de pestaña
+        document.getElementById('content-main').scrollTop = 0;
     }
 
-    // --- ELIMINACIÓN DE PORTAPAPELES (NIVEL KERNEL BROWSER) ---
+    // --- SEGURIDAD ---
     function clearClipboard() {
-        navigator.clipboard.writeText("CONTENIDO PROTEGIDO - IT TOOLKIT").catch(()=>{});
+        navigator.clipboard.writeText("SISTEMA PROTEGIDO").catch(()=>{});
     }
 
-    // Monitoreo constante cuando la ventana pierde el foco
     let clipboardInterval;
 
     window.addEventListener('keydown', function(e) {
-        // Bloqueo F12, Ctrl+U, Ctrl+Shift+I
         if (e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) {
-            e.preventDefault(); e.stopPropagation(); return false;
+            e.preventDefault(); return false;
         }
-        
-        // Detección de Captura
-        if (e.key === "PrintScreen" || e.keyCode == 44 || e.key === "Meta") {
+        if (e.key === "PrintScreen" || e.keyCode == 44) {
             document.getElementById('blackout').style.display = 'flex';
             clearClipboard();
-            setTimeout(() => { document.getElementById('blackout').style.display = 'none'; }, 1000);
+            setTimeout(() => { document.getElementById('blackout').style.display = 'none'; }, 1500);
         }
     }, true);
 
-    document.addEventListener('contextmenu', e => e.preventDefault());
-
-    // Cuando el usuario sale (Alt+Tab o Win+PrtSc), limpiamos el portapapeles sin parar
     window.addEventListener('blur', () => {
         document.getElementById('content-main').classList.add('blur-mode');
-        document.getElementById('blackout').style.display = 'flex';
         clearClipboard();
-        // Bucle de seguridad: limpia cada 100ms mientras no estés en la web
-        clipboardInterval = setInterval(clearClipboard, 100);
+        clipboardInterval = setInterval(clearClipboard, 200);
     });
 
     window.addEventListener('focus', () => {
         document.getElementById('content-main').classList.remove('blur-mode');
-        document.getElementById('blackout').style.display = 'none';
         clearInterval(clipboardInterval);
     });
 </script>
