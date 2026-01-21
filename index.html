@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IT Tech Suite | Master Panel</title>
+    
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/606/606548.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
+        /* ... (Mantenemos tu CSS original) ... */
         :root {
             --bg-body: #05070a;
             --sidebar-bg: #0d1117;
@@ -24,7 +28,6 @@
         /* RESET Y SELECCIÓN */
         * { box-sizing: border-box; }
         
-        /* Solo se activa para el cliente */
         .client-active {
             -webkit-user-select: none !important;
             user-select: none !important;
@@ -82,7 +85,14 @@
         /* CONTENIDO */
         main { margin-left: 280px; padding: 40px 60px; width: 100%; }
         header { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .content-section { margin-bottom: 50px; }
+        
+        /* Ajuste para el nuevo titulo con icono */
+        #page-title { display: flex; align-items: center; gap: 15px; transition: 0.3s ease; }
+        #page-title i { color: var(--primary); font-size: 0.9em; }
+
+        .content-section { margin-bottom: 50px; display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
         .section-title { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem; margin-bottom: 20px; display: block; }
         
@@ -129,18 +139,17 @@
 <nav>
     <div class="logo" onclick="showAll()"><i class="fas fa-terminal"></i> <span>IT TOOLKIT</span></div>
     <div class="search-container"><i class="fas fa-search"></i><input type="text" id="main-search" placeholder="Buscar..." onkeyup="filterCards()"></div>
-    <a onclick="showSection('seguridad')" class="nav-btn"><i class="fas fa-shield-virus"></i> <span>Seguridad</span></a>
-    <a onclick="showSection('activacion')" class="nav-btn"><i class="fas fa-key"></i> <span>Activación</span></a>
-    <a onclick="showSection('optimizacion')" class="nav-btn"><i class="fas fa-rocket"></i> <span>Optimización</span></a>
-    <a onclick="showSection('mantenimiento')" class="nav-btn"><i class="fas fa-tools"></i> <span>Mantenimiento</span></a>
-    <a onclick="showSection('windows11')" class="nav-btn"><i class="fab fa-windows"></i> <span>Bypass W11</span></a>
-    <a onclick="showSection('hardware')" class="nav-btn"><i class="fas fa-microchip"></i> <span>Hardware</span></a>
-    <a onclick="showSection('descargas')" class="nav-btn"><i class="fas fa-download"></i> <span>Descargas</span></a>
+    <a onclick="showSection('seguridad', 'fa-shield-virus')" class="nav-btn"><i class="fas fa-shield-virus"></i> <span>Seguridad</span></a>
+    <a onclick="showSection('activacion', 'fa-key')" class="nav-btn"><i class="fas fa-key"></i> <span>Activación</span></a>
+    <a onclick="showSection('optimizacion', 'fa-rocket')" class="nav-btn"><i class="fas fa-rocket"></i> <span>Optimización</span></a>
+    <a onclick="showSection('mantenimiento', 'fa-tools')" class="nav-btn"><i class="fas fa-tools"></i> <span>Mantenimiento</span></a>
+    <a onclick="showSection('windows11', 'fa-windows')" class="nav-btn"><i class="fab fa-windows"></i> <span>Bypass W11</span></a>
+    <a onclick="showSection('hardware', 'fa-microchip')" class="nav-btn"><i class="fas fa-microchip"></i> <span>Hardware</span></a>
 </nav>
 
 <main id="main-content">
     <header>
-        <h1 id="page-title">Panel General</h1>
+        <h1 id="page-title"><i class="fas fa-layer-group"></i> Panel General</h1>
         <p id="status-text">Bienvenido. Seleccione una categoría.</p>
     </header>
 
@@ -201,13 +210,13 @@
 <div id="toast">Copiado al portapapeles</div>
 
 <script>
+    // ... (Variables y funciones de seguridad se mantienen iguales) ...
     let currentRole = 'user';
     let clientTimer = null;
     let clientPassword = '';
-    const CLIENT_TIMEOUT_MS = 60000; // 1 minuto de sesión para el cliente
-    const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"; // admin123
+    const CLIENT_TIMEOUT_MS = 60000;
+    const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
 
-    // Generar clave temporal cada vez que se carga o bloquea
     function generatePass() {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         let pass = '';
@@ -258,10 +267,7 @@
 
     function openLink(url) {
         window.open(url, '_blank');
-        if (currentRole === 'user') {
-            // Si el cliente abre un link, bloqueamos el panel por seguridad
-            lockPanel();
-        }
+        if (currentRole === 'user') lockPanel();
     }
 
     function copyText(btn) {
@@ -269,7 +275,6 @@
             alert("Función deshabilitada para clientes. Contacte al administrador.");
             return;
         }
-        
         const text = btn.parentElement.querySelector('.cmd-text').innerText;
         navigator.clipboard.writeText(text).then(() => {
             const t = document.getElementById('toast');
@@ -278,23 +283,37 @@
         });
     }
 
-    // --- PROTECCIONES ANTI-CLIENTE ---
-    
-    // Bloqueo de Teclas (F12, Ctrl+U, etc)
+    // --- NUEVAS FUNCIONES DE NAVEGACIÓN CON ICONOS ---
+    function showSection(id, iconClass) {
+        // Ocultar todas
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+        // Mostrar seleccionada
+        const target = document.getElementById(id);
+        if(target) {
+            target.style.display = 'block';
+            // Actualizar título con el icono correspondiente
+            const title = id.charAt(0).toUpperCase() + id.slice(1);
+            document.getElementById('page-title').innerHTML = `<i class="fas ${iconClass}"></i> ${title}`;
+        }
+    }
+
+    function showAll() {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'block');
+        document.getElementById('page-title').innerHTML = `<i class="fas fa-layer-group"></i> Panel General`;
+    }
+
+    // --- EL RESTO DE TUS EVENTOS ---
     window.addEventListener('keydown', e => {
         if (currentRole === 'admin') return;
-        
         if (e.key === "PrintScreen" || e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73) || (e.ctrlKey && e.keyCode == 85)) {
             e.preventDefault();
             lockPanel();
         }
     });
 
-    // Enfoque/Desenfoque
     window.onblur = () => { if(currentRole === 'user') document.body.classList.add('protected-mode'); };
     window.onfocus = () => document.body.classList.remove('protected-mode');
 
-    // Envenenar portapapeles (Solo cliente)
     setInterval(() => {
         if(currentRole === 'user' && document.getElementById('lock-screen').style.display === 'none') {
             const el = document.createElement('textarea');
@@ -306,18 +325,6 @@
         }
     }, 600);
 
-    // --- UTILIDADES ---
-    function showSection(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-        document.getElementById('page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1);
-    }
-
-    function showAll() {
-        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'block');
-        document.getElementById('page-title').innerText = "Panel General";
-    }
-
     function filterCards() {
         const val = document.getElementById('main-search').value.toLowerCase();
         document.querySelectorAll('.filter-item').forEach(c => {
@@ -327,11 +334,8 @@
     }
 
     document.getElementById('pass-input').addEventListener('keypress', e => { if(e.key === 'Enter') checkPass(); });
-
-    // Carga inicial
     window.onload = lockPanel;
 </script>
 
 </body>
 </html>
-
