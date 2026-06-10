@@ -20,12 +20,10 @@
             --nav-width: 260px;
         }
 
-        * { 
-            box-sizing: border-box; 
-            user-select: none !important; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
+      * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: var(--bg-body); 
@@ -252,15 +250,40 @@
     // --- LOGIN ---
     const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
     let gKey = Math.random().toString(36).substring(2, 7).toUpperCase();
+    let currentRole = null;
+
     document.getElementById('hint').innerText = "GUEST TOKEN: " + gKey;
 
     async function checkPass() {
         const p = document.getElementById('pass-input').value;
         const r = document.getElementById('role-select').value;
-        const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p)).then(b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''));
+
+        const h = await crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(p)
+        ).then(b =>
+            Array.from(new Uint8Array(b))
+                .map(x => x.toString(16).padStart(2, '0'))
+                .join('')
+        );
+
         if ((r === 'admin' && h === ADMIN_HASH) || (r === 'user' && p === gKey)) {
+
+            currentRole = r;
+
+            if (r === 'admin') {
+                document.body.style.userSelect = 'text';
+                document.body.style.webkitUserSelect = 'text';
+            } else {
+                document.body.style.userSelect = 'none';
+                document.body.style.webkitUserSelect = 'none';
+            }
+
             document.getElementById('lock-screen').style.display = 'none';
-        } else { alert("Credenciales Incorrectas"); }
+
+        } else {
+            alert("Credenciales Incorrectas");
+        }
     }
 
     // --- NAVEGACIÓN ---
@@ -271,6 +294,26 @@
         el.classList.add('active');
         document.getElementById('content-main').scrollTo(0, 0);
     }
+
+    // --- BLOQUEO DE COPIA PARA INVITADOS ---
+    document.addEventListener('copy', function(e) {
+        if (currentRole !== 'admin') {
+            e.preventDefault();
+            alert('Solo los administradores pueden copiar contenido.');
+        }
+    });
+
+    document.addEventListener('cut', function(e) {
+        if (currentRole !== 'admin') {
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('selectstart', function(e) {
+        if (currentRole !== 'admin') {
+            e.preventDefault();
+        }
+    });
 
     // --- PROTECCIÓN ANTICAPTURA ---
     function clearClipboard() {
