@@ -156,6 +156,58 @@
 
             h1 { font-size: 1.5rem; }
         }
+
+        /* =========================
+   CONTROL DE COPIA POR ROL
+   ========================= */
+
+.admin-mode,
+.admin-mode * {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+.guest-mode,
+.guest-mode * {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+.admin-mode .cmd-box,
+.admin-mode p,
+.admin-mode h1,
+.admin-mode h2,
+.admin-mode h3,
+.admin-mode h4,
+.admin-mode h5,
+.admin-mode h6,
+.admin-mode span,
+.admin-mode div,
+.admin-mode strong,
+.admin-mode code {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
+.guest-mode .cmd-box,
+.guest-mode p,
+.guest-mode h1,
+.guest-mode h2,
+.guest-mode h3,
+.guest-mode h4,
+.guest-mode h5,
+.guest-mode h6,
+.guest-mode span,
+.guest-mode div,
+.guest-mode strong,
+.guest-mode code {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
     </style>
 </head>
 
@@ -249,88 +301,130 @@
 <script>
     // --- LOGIN ---
     const ADMIN_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+
     let gKey = Math.random().toString(36).substring(2, 7).toUpperCase();
     let currentRole = null;
 
-    document.getElementById('hint').innerText = "GUEST TOKEN: " + gKey;
+    document.getElementById("hint").innerText = "GUEST TOKEN: " + gKey;
 
     async function checkPass() {
-        const p = document.getElementById('pass-input').value;
-        const r = document.getElementById('role-select').value;
+
+        const p = document.getElementById("pass-input").value;
+        const r = document.getElementById("role-select").value;
 
         const h = await crypto.subtle.digest(
-            'SHA-256',
+            "SHA-256",
             new TextEncoder().encode(p)
-        ).then(b =>
-            Array.from(new Uint8Array(b))
-                .map(x => x.toString(16).padStart(2, '0'))
-                .join('')
+        ).then(buffer =>
+            Array.from(new Uint8Array(buffer))
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("")
         );
 
-        if ((r === 'admin' && h === ADMIN_HASH) || (r === 'user' && p === gKey)) {
+        const validAdmin = (r === "admin" && h === ADMIN_HASH);
+        const validUser = (r === "user" && p === gKey);
+
+        if (validAdmin || validUser) {
 
             currentRole = r;
 
-            if (r === 'admin') {
-                document.body.style.userSelect = 'text';
-                document.body.style.webkitUserSelect = 'text';
+            if (currentRole === "admin") {
+
+                document.body.classList.add("admin-mode");
+                document.body.classList.remove("guest-mode");
+
+                document.querySelectorAll("*").forEach(el => {
+                    el.style.userSelect = "text";
+                    el.style.webkitUserSelect = "text";
+                });
+
             } else {
-                document.body.style.userSelect = 'none';
-                document.body.style.webkitUserSelect = 'none';
+
+                document.body.classList.add("guest-mode");
+                document.body.classList.remove("admin-mode");
+
+                document.querySelectorAll("*").forEach(el => {
+                    el.style.userSelect = "none";
+                    el.style.webkitUserSelect = "none";
+                });
             }
 
-            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById("lock-screen").style.display = "none";
 
         } else {
+
             alert("Credenciales Incorrectas");
+
         }
     }
 
     // --- NAVEGACIÓN ---
     function changeTab(id, el) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
-        document.getElementById('content-main').scrollTo(0, 0);
+
+        document.querySelectorAll(".section")
+            .forEach(s => s.classList.remove("active"));
+
+        document.querySelectorAll(".nav-item")
+            .forEach(i => i.classList.remove("active"));
+
+        document.getElementById(id).classList.add("active");
+        el.classList.add("active");
+
+        document.getElementById("content-main").scrollTo(0, 0);
     }
 
     // --- BLOQUEO DE COPIA PARA INVITADOS ---
-    document.addEventListener('copy', function(e) {
-        if (currentRole !== 'admin') {
+    document.addEventListener("copy", function(e) {
+
+        if (currentRole !== "admin") {
             e.preventDefault();
-            alert('Solo los administradores pueden copiar contenido.');
+            alert("Solo los administradores pueden copiar contenido.");
         }
+
     });
 
-    document.addEventListener('cut', function(e) {
-        if (currentRole !== 'admin') {
+    document.addEventListener("cut", function(e) {
+
+        if (currentRole !== "admin") {
             e.preventDefault();
         }
+
     });
 
-    document.addEventListener('selectstart', function(e) {
-        if (currentRole !== 'admin') {
+    document.addEventListener("selectstart", function(e) {
+
+        if (currentRole !== "admin") {
             e.preventDefault();
         }
+
     });
 
     // --- PROTECCIÓN ANTICAPTURA ---
     function clearClipboard() {
-        navigator.clipboard.writeText("SISTEMA PROTEGIDO").catch(()=>{});
+        navigator.clipboard.writeText("SISTEMA PROTEGIDO").catch(() => {});
     }
 
-    window.addEventListener('blur', () => {
-        document.getElementById('content-main').classList.add('blur-mode');
-        document.getElementById('blackout').style.display = 'flex';
+    window.addEventListener("blur", () => {
+
+        document.getElementById("content-main")
+            .classList.add("blur-mode");
+
+        document.getElementById("blackout")
+            .style.display = "flex";
+
         clearClipboard();
+
     });
 
-    window.addEventListener('focus', () => {
-        document.getElementById('content-main').classList.remove('blur-mode');
-        document.getElementById('blackout').style.display = 'none';
+    window.addEventListener("focus", () => {
+
+        document.getElementById("content-main")
+            .classList.remove("blur-mode");
+
+        document.getElementById("blackout")
+            .style.display = "none";
+
     });
 </script>
-
 </body>
 </html>
